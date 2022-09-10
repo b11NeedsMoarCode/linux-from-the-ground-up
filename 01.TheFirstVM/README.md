@@ -131,7 +131,7 @@ The only notable thing is that, by default, busybox is not going to be compiled 
 We'd rather have it be a statically-linked file for our use case.
 So the file produced by asking for the default configuration (make defconfig) is ammended to have the line CONFIG\_STATIC=y
 
-## Busybox and Toybox, and argc[0] in C programming
+## Busybox and Toybox, and argv[0] in C programming
 
 We are almost ready to make our filesystem. But first we need to explain a few things about busybox. We won't cover anything about toybox until a later chapter, but the following remarks apply to toybox as well.
 
@@ -178,7 +178,7 @@ arg #1 : foo
 arg #2 : bar
 ```
 
-So, as a program writer, the name of your program is dynamically bound to argc[0]. You can write code that works differently based upon the name. That's exactly what busybox (and as we will see later, toybox) do.
+So, as a program writer, the name of your program is dynamically bound to argv[0]. You can write code that works differently based upon the name. That's exactly what busybox (and as we will see later, toybox) do.
 
 In busybox, you can get the exact list of supported command by invoking **busybox --list**.
 
