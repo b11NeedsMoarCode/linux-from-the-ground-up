@@ -60,7 +60,7 @@ build/initrd.img: build/busybox
 	find . | cpio -R +0:+0 -o -H newc  > ../initrd.img
 	
 .PHONY: graphical
-graphical: initrd.img build/kernel
+graphical: build/initrd.img build/kernel
 	qemu-system-x86_64 -kernel build/kernel -initrd build/initrd.img
 	
 .PHONY: run

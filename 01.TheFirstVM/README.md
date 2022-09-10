@@ -289,11 +289,11 @@ You should try both. Invoke them via **make graphical** and **make run**.
 
 ```make
 .PHONY: graphical
-graphical: initrd.img bzImage
+graphical: build/initrd.img build/kernel
 	qemu-system-x86_64 -kernel build/kernel -initrd build/initrd.img
 	
 .PHONY: run
-run:  build/initrd.img
+run:  build/initrd.img build/kernel
 	qemu-system-x86_64 -kernel build/kernel -initrd build/initrd.img -nographic -append 'console=ttyS0'
 ```
 
