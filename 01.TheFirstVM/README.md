@@ -40,7 +40,7 @@ This is useful eg, when you want to make compilation steps. Suppose I make a "He
 hello: hello.c
 	gcc hello.c -o hello
 ```
-After any modification to the file hello.c, I can simple run _make hello_ to re-create the executable. Thanks to this final capability, it is quite easy to test changes incrementally: change one file, run make, observe the results. So long as make has a complete enough picture of what depends upon what, you never need to care about the exact list of commands you need to run to get a working result anymore.
+After any modification to the file hello.c, I can simple run **make hello** to re-create the executable. Thanks to this final capability, it is quite easy to test changes incrementally: change one file, run make, observe the results. So long as make has a complete enough picture of what depends upon what, you never need to care about the exact list of commands you need to run to get a working result anymore.
 
 Make has variables, and variable expansion. Because of this, the $ symbol has special semantics. If you want to use this symbol in your shell commands, you must escape $ with another $. This is the reason you'll see double-dollars later in the code
 
@@ -114,7 +114,6 @@ src/busybox.tar.bz2:
 	wget https://busybox.net/downloads/busybox-$(BUSYBOX_VERSION).tar.bz2
 	cp busybox-$(BUSYBOX_VERSION).tar.bz2 busybox.tar.bz2
 
-
 build/busybox: src/busybox.tar.bz2
 	set -euo pipefail
 	cd src
@@ -179,13 +178,13 @@ arg #1 : foo
 arg #2 : bar
 ```
 
-So, as a program writer, if the name of your program is dynamically bound to argc[0], you can write code that works differently based upon the name. That's exactly what busybox (and as we will see later, toybox) do.
+So, as a program writer, the name of your program is dynamically bound to argc[0]. You can write code that works differently based upon the name. That's exactly what busybox (and as we will see later, toybox) do.
 
 In busybox, you can get the exact list of supported command by invoking **busybox --list**.
 
 In toybox you get the same (although the exact format of the output differs a bit), by invoking **toybox --long**.
 
-So when I wrote we compiled busybox, we actually compiled a rather exhaustive set of command-line tools. It notably includes a shell called **sh**, which purports to be a posix-compliant shell.
+So when we compiled busybox, we actually compiled a rather exhaustive set of command-line tools. It notably includes a shell called **sh**, which purports to be a posix-compliant shell.
 ```bash
 # # Let's see how many commands are within
 # cd build && ./busybox --list | wc -l
@@ -247,7 +246,6 @@ So let's make our initrd image. Our initrd image will consist of a root director
 
 
 ```makefile
-###busybox needs to have been compiled before you can make your initrd image, hence the explicit dependency to build/busybox
 build/initrd.img: build/busybox
 	cd build
 	#
@@ -278,11 +276,12 @@ So you can replace as such:
 - 	find . | cpio -R +0:+0 -o -H newc > ../initrd.img
 +	find . | cpio -R +0:+0 -o -H newc | gzip -9 -n  > ../initrd.img
 ```
-At this stage of the In one of my tests, this compressed a 2688 bytes archive down into a 1404 bytes archive, which is a compression ration of 1.9. 
+At this stage we get a compression ratio of ~1.9. The uncompressed image is around 2.7 MB.
+While this may not matter as of writing, this step would have been the difference between fitting our system in a 1.7 MB floppy drive or not.
 
 ## Running our first VM
 
-So we have everything : a kernel to run, a filesystem to boot on, and in the filesystem there is an init script. We don't need a bootloader _yet_ (see Annex, QEMU has one already)
+So we have everything required : a kernel to run, a filesystem to boot on, and in the filesystem there is an init script. We don't need a bootloader _yet_ (see Annex, QEMU has one already)
 There are two modes to run the VM : one where you have a graphical interface, and one where you tell the kernel to use the serial port (that QEMU will emulate for us) and you tell QEMU to redirect its stdin and stdout to the serial port.
 
 You should try both. Invoke them via **make graphical** and **make run**.
